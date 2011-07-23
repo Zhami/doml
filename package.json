@@ -1,0 +1,19 @@
+{
+	"author": "Stuart Malin <@zhami>",
+	"description": "a DOM constructor",
+	"devDependencies": {
+		"smoosh": "0.3.x"
+	},
+	"homepage": "https://github.com/zhami/zamler",
+	"keywords": ["doml", "render", "DOM"],
+	"main": "./doml.js",
+	"name": "doml",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/zhami/doml.git"
+	},
+	"scripts": {
+		"boosh": "node Makefile.js"
+	},
+	"version": "0.0.1"
+}
