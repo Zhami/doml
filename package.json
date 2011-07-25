@@ -4,6 +4,7 @@
 	"devDependencies": {
 		"smoosh": "0.3.x"
 	},
+	"ender": "./src/ender.js",
 	"homepage": "https://github.com/zhami/zamler",
 	"keywords": ["doml", "render", "DOM"],
 	"main": "./doml.js",

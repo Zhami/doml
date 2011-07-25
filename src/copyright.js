@@ -1,6 +1,6 @@
 /*!
-  * Hamler - a haml DOM emitter
+  * Doml - a DOM constructor
   * copyright Stuart Malin 2011
-  * https://github.com/zhami/hamler
+  * https://github.com/zhami/doml
   * MIT License
   */
