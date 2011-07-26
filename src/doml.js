@@ -1,9 +1,9 @@
 !function (context) {
 
-	var	contextDoc, createNode, doml, Doml, env, getGlobal, isArray, old, procArgs, procTag;
+	var	contextDoc, createNode, doml, Doml, env, getGlobal, isArray, procArgs, procTag;
 
-	var sys = require('sys');
-	var	eyes = require('eyes');
+//	var sys = require('sys');
+//	var	eyes = require('eyes');
 
 	//----------------------------------------
 	// support
@@ -45,7 +45,7 @@
 	//----------------------------------------
 
 	createNode = function () {
-		var	attrs, element, n, setAttr;
+		var	element, i, n, s, setAttr;
 		
 		setAttr = function (elem, name, value) {
 			
@@ -53,6 +53,10 @@
 			case "checked":
 			case "selected":
 				elem[name] = Boolean(value);
+				break;
+			case "className":
+			case "class":
+				elem.className = value;
 				break;
 			default:
 				elem.setAttribute(name, value);
@@ -63,12 +67,22 @@
 		element = this.document.createElement(this.tagName);
 		
 		// set Attributes
-		attrs = this.attrs;
-		for (var n in attrs) {
-			attrs.hasOwnProperty(n) && setAttr(element, n, attrs[n]);
+		s = this.attrs;
+		for (n in s) {
+			s.hasOwnProperty(n) && setAttr(element, n, s[n]);
 		}
-		
+
+		// add text (but not to nodes that don't allow it)
+		s = !/^input$/.test(this.tagName.toLowerCase());
+		if (s && (s =  this.content)) {
+			element.innerHTML = s;
+		}
 		return element;
+	};
+	
+	getText = function (elem) {
+		var node;
+		
 	};
 
 	procArg = function (arg) {
@@ -153,7 +167,7 @@
 				return rootNode;
 			}
 		},
-
+		
 		setDocument: function (doc) {
 			this.document = doc;
 		}
@@ -165,14 +179,17 @@
 
 	if (env.isModule) {
 		module.exports = Doml;
+		Doml.noConflict = function () {};
 	} else {
-		doml = new Doml();
-		old = context.doml;
-		doml.noConflict = function () {
-			context.doml = old;
-			return this;
-		};
-		context.doml = doml;
+		!function () {
+			var	old;
+			old = context.Doml;
+			Doml.noConflict = function () {
+				context.Doml = old;
+				return Doml;
+			};			
+		}();
+		context.Doml = Doml;
 	}
 
 
