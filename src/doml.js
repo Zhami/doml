@@ -16,6 +16,7 @@
 		var	env, global;
 		env = {
 			global: undefined,
+			isAMD: false,
 			isBrowser: false,
 			isModule: false,
 			isEnder: false,
@@ -25,6 +26,7 @@
 		env.global = global = (function () {
 			return this;
 		})();
+		env.isAMD = Boolean(typeof define !== 'undefined' && define.AMD);
 		env.isBowser = Boolean(typeof global.window !== 'undefined');
 		env.isEnder = Boolean(typeof context.ender !== 'undefined');
 		env.isModule = Boolean(typeof module !== 'undefined' && module.exports);
@@ -187,7 +189,8 @@
 			Doml.noConflict = function () {
 				context.Doml = old;
 				return Doml;
-			};			
+			};
+			return this;
 		}();
 		context.Doml = Doml;
 	}

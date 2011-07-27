@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html lang="en-us">
+	<head>
+		<title>IP Geocode</title>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<link rel="stylesheet" href="./examples.css" type="text/css">
+		<script type="text/javascript" src="../src/doml.js"></script>
+	</head>
+	<body>
+		<h1>IP Geocode</h1>
+		<ol id="results"></ol>
+	</body>
+	<script type="text/javascript">
+		var	cb, doml, el;
+		cb = function (data) {
+			var el, loc = data.city;
+			if (data.region_name.length > 0) {
+				loc = loc + ', ' + data.region_name;
+			}
+			el = document.getElementById('results');
+			el.appendChild(doml.create('li', 'IP address: ' + data.ip))
+			el.appendChild(doml.create('li', 'Estimated location: ' + loc))
+		}
+		doml = new Doml();
+		el = doml.create('script', {src:'http://freegeoip.net/json/?callback=cb'});
+		document.body.appendChild(el);
+	</script>
+</html>	
+	

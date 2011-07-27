@@ -2,12 +2,13 @@
 	"author": "Stuart Malin <@zhami>",
 	"description": "a DOM constructor",
 	"devDependencies": {
-		"smoosh": "0.3.x"
+		"smoosh": "0.3.x",
+		"sink-test": "0.0.8+"
 	},
 	"ender": "./src/ender.js",
 	"homepage": "https://github.com/zhami/zamler",
 	"keywords": ["doml", "render", "DOM"],
-	"main": "./doml.js",
+	"main": "./src/doml.js",
 	"name": "doml",
 	"repository": {
 		"type": "git",

@@ -1,6 +1,6 @@
 !function ($) {
 	
-	var	d = doml;
+	var	D = Doml;
 
 	$ender({
 		doml: function (v) {
