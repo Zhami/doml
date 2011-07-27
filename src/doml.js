@@ -48,9 +48,9 @@
 
 	createNode = function () {
 		var	element, i, n, s, setAttr;
-		
+
 		setAttr = function (elem, name, value) {
-			
+
 			switch (name) {
 			case "checked":
 			case "selected":
@@ -64,10 +64,10 @@
 				elem.setAttribute(name, value);
 			}
 		};
-		
+
 		// create the element
 		element = this.document.createElement(this.tagName);
-		
+
 		// set Attributes
 		s = this.attrs;
 		for (n in s) {
@@ -81,10 +81,10 @@
 		}
 		return element;
 	};
-	
+
 	getText = function (elem) {
 		var node;
-		
+
 	};
 
 	procArg = function (arg) {
@@ -134,7 +134,7 @@
 			procArg.call(this, arg);
 		}
 	};
-	
+
 	//----------------------------------------
 	// Constructor
 	//----------------------------------------
@@ -155,7 +155,7 @@
 			this.attrs = {};
 			this.elems = [];
 		},
-		
+
 		create: function () {
 			var	rootNode;
 
@@ -169,11 +169,11 @@
 				return rootNode;
 			}
 		},
-		
+
 		setDocument: function (doc) {
 			this.document = doc;
 		},
-		
+
 		verbose: false
 	};
 
