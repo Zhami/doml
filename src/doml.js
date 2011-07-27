@@ -1,17 +1,14 @@
 !function (context) {
 
-	var	contextDoc, createNode, doml, Doml, Domil_orig, env, getGlobal, isArray, procArgs, procTag;
+	var	contextDoc, createNode, doml, Doml, Domil_orig, env, getGlobal, isArray, isNode, procArgs, procTag;
 
 //	var sys = require('sys');
 //	var	eyes = require('eyes');
 
+
 	//----------------------------------------
 	// support
 	//----------------------------------------
-	isArray = function (x) {
-		return Boolean(x && (Object.prototype.toString.apply(x) === '[object Array]'));
-	};
-
 	getEnv = function () {
 		var	env, global;
 		env = {
@@ -34,13 +31,13 @@
 		return env;
 	};
 
-	//----------------------------------------
-	// init
-	//----------------------------------------
-	env = getEnv();
-	if (context.window) {
-		contextDoc = window.document;
-	}
+	isArray = function (x) {
+		return Boolean(x && (Object.prototype.toString.apply(x) === '[object Array]'));
+	};
+
+	isNode = function (node) {
+		return node && node.nodeName && node.nodeType == 1;
+	};
 
 	//----------------------------------------
 	// ops
@@ -157,16 +154,21 @@
 		},
 
 		create: function () {
-			var	rootNode;
+			var	node, rootNode;
 
 			this.clear();
-			procArgs.call(this, arguments);
 
-			if (!this.document || !this.tagName) {
-				return null;
+			if ((arguments.length === 1) && isNode(node = arguments[0])) {
+				return node.cloneNode(true);
 			} else {
-				rootNode = createNode.call(this);
-				return rootNode;
+				procArgs.call(this, arguments);
+
+				if (!this.document || !this.tagName) {
+					return null;
+				} else {
+					rootNode = createNode.call(this);
+					return rootNode;
+				}
 			}
 		},
 
@@ -176,6 +178,14 @@
 
 		verbose: false
 	};
+
+	//----------------------------------------
+	// init
+	//----------------------------------------
+	env = getEnv();
+	if (context.window) {
+		contextDoc = window.document;
+	}
 
 	//----------------------------------------
 	// setup environment
@@ -197,6 +207,5 @@
 	} else {
 		throw new Error('Doml: can not determine the environment!');
 	}
-	
 
 }(this);

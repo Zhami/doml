@@ -42,6 +42,11 @@
 			});
 		}
 
+		test('node cloning', 1, function() {
+			elem = document.getElementById('the-span');
+			elem = doml.create(elem);
+			ok(elem.nodeName === 'SPAN', 'cloned element has proper nodeName');
+		});
 
 		test('element creation #1', 7, function() {
 			elem = doml.create('div', 'hello');
