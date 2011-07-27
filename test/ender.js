@@ -100,18 +100,15 @@
 
   !function (context) {
   
-  	var	contextDoc, createNode, doml, Doml, env, getGlobal, isArray, procArgs, procTag;
+  	var	contextDoc, createNode, doml, Doml, Domil_orig, env, getGlobal, isArray, isNode, procArgs, procTag;
   
   //	var sys = require('sys');
   //	var	eyes = require('eyes');
   
+  
   	//----------------------------------------
   	// support
   	//----------------------------------------
-  	isArray = function (x) {
-  		return Boolean(x && (Object.prototype.toString.apply(x) === '[object Array]'));
-  	};
-  
   	getEnv = function () {
   		var	env, global;
   		env = {
@@ -127,20 +124,20 @@
   			return this;
   		})();
   		env.isAMD = Boolean(typeof define !== 'undefined' && define.AMD);
-  		env.isBowser = Boolean(typeof global.window !== 'undefined');
+  		env.isBrowser = Boolean(typeof global.window !== 'undefined');
   		env.isEnder = Boolean(typeof context.ender !== 'undefined');
   		env.isModule = Boolean(typeof module !== 'undefined' && module.exports);
   		env.hasRequire = Boolean(typeof require === 'function');
   		return env;
   	};
   
-  	//----------------------------------------
-  	// init
-  	//----------------------------------------
-  	env = getEnv();
-  	if (context.window) {
-  		contextDoc = window.document;
-  	}
+  	isArray = function (x) {
+  		return Boolean(x && (Object.prototype.toString.apply(x) === '[object Array]'));
+  	};
+  
+  	isNode = function (node) {
+  		return node && node.nodeName && node.nodeType == 1;
+  	};
   
   	//----------------------------------------
   	// ops
@@ -240,7 +237,7 @@
   	//----------------------------------------
   
   	Doml = function (doc) {
-  		if (! doc && env.isBowser) {
+  		if (! doc && env.isBrowser) {
   			doc = env.global.window.document;
   		}
   		this.document = doc;
@@ -257,16 +254,21 @@
   		},
   
   		create: function () {
-  			var	rootNode;
+  			var	node, rootNode;
   
   			this.clear();
-  			procArgs.call(this, arguments);
   
-  			if (!this.document || !this.tagName) {
-  				return null;
+  			if ((arguments.length === 1) && isNode(node = arguments[0])) {
+  				return node.cloneNode(true);
   			} else {
-  				rootNode = createNode.call(this);
-  				return rootNode;
+  				procArgs.call(this, arguments);
+  
+  				if (!this.document || !this.tagName) {
+  					return null;
+  				} else {
+  					rootNode = createNode.call(this);
+  					return rootNode;
+  				}
   			}
   		},
   
@@ -278,27 +280,33 @@
   	};
   
   	//----------------------------------------
+  	// init
+  	//----------------------------------------
+  	env = getEnv();
+  	if (context.window) {
+  		contextDoc = window.document;
+  	}
+  
+  	//----------------------------------------
   	// setup environment
   	//----------------------------------------
   
+  	Domil_orig = context.Doml;
+  
   	if (env.isEnder) {
   		module.exports = new Doml();
+  	} else if (env.isBrowser) {
+  		Doml.noConflict = function () {
+  			context.Doml = Domil_orig;
+  			return Doml;
+  		};
+  		context.Doml = Doml;
   	} else if (env.isModule) {
   		module.exports = Doml;
   		Doml.noConflict = function () {};
   	} else {
-  		!function () {
-  			var	old;
-  			old = context.Doml;
-  			Doml.noConflict = function () {
-  				context.Doml = old;
-  				return Doml;
-  			};
-  			return this;
-  		}();
-  		context.Doml = Doml;
+  		throw new Error('Doml: can not determine the environment!');
   	}
-  
   
   }(this);
 
@@ -310,12 +318,11 @@
   	
     	var	d = require('doml');
   	
- 		$.ender({
-			doml: function () {
-				return $([d.create.apply(d, arguments)]);
-			}
-		});
-
+  	$.ender({
+  		doml: function () {
+  			return $([d.create.apply(d, arguments)]);
+  		}
+  	});
   
   	$.ender({
   		doml: function () {
@@ -325,6 +332,10 @@
   			})
   		}
   	}, true);	
+  
+  	$.id = function (id) {
+  		return $([document.getElementById(id)]);
+  	};
   
   }(ender || $);
 

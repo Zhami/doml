@@ -11,12 +11,12 @@
 	});
 
 	$.ender({
-		doml: function () {
-			this.forEach(function (el) {
-				var element = d.create.apply(d, arguments);
-				el.appendChild(element);
-			})
-		}
+ 		doml: function () {
+			var element = d.create.apply(d, arguments);
+  			this.forEach(function (el) {
+  				el.appendChild(d.create.call(d, element));
+  			})
+  		}
 	}, true);	
 
 	$.id = function (id) {

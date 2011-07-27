@@ -48,13 +48,12 @@
 		test('node cloning', 1, function() {
 			elem = document.getElementById('the-span');
 			enderSet = $.doml(elem);
-			console.log('enderSet=' + enderSet)
 			elem = enderSet[0];
 			ok(elem.nodeName === 'SPAN', 'cloned element has proper nodeName');
 		});
 
 		test('doml works on Ender element chain', 2, function() {
-			$.doml(body).doml('div', 'hello');
+			$(body).doml('div', 'hello');
 			elem = body.lastChild;
 			ok(elem.nodeName === 'DIV', 'element has proper tag');
 			ok(elem.innerHTML === 'hello', 'has proper text');

@@ -8,7 +8,7 @@
 	"ender": "./src/ender.js",
 	"homepage": "https://github.com/zhami/zamler",
 	"keywords": ["doml", "render", "DOM"],
-	"main": "./src/doml.js",
+	"main": "./dist/doml.js",
 	"name": "doml",
 	"repository": {
 		"type": "git",
@@ -17,5 +17,5 @@
 	"scripts": {
 		"boosh": "node Makefile.js"
 	},
-	"version": "0.0.1-3"
+	"version": "0.0.1-4"
 }
