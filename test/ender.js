@@ -310,11 +310,12 @@
   	
     	var	d = require('doml');
   	
-  	$.ender({
-  		doml: function () {
-  			return d.create.apply(d, arguments);
-  		}
-  	});
+ 		$.ender({
+			doml: function () {
+				return $([d.create.apply(d, arguments)]);
+			}
+		});
+
   
   	$.ender({
   		doml: function () {

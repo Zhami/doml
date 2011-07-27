@@ -1,6 +1,6 @@
 !function (context) {
 
-	var	contextDoc, createNode, doml, Doml, env, getGlobal, isArray, procArgs, procTag;
+	var	contextDoc, createNode, doml, Doml, Domil_orig, env, getGlobal, isArray, procArgs, procTag;
 
 //	var sys = require('sys');
 //	var	eyes = require('eyes');
@@ -27,7 +27,7 @@
 			return this;
 		})();
 		env.isAMD = Boolean(typeof define !== 'undefined' && define.AMD);
-		env.isBowser = Boolean(typeof global.window !== 'undefined');
+		env.isBrowser = Boolean(typeof global.window !== 'undefined');
 		env.isEnder = Boolean(typeof context.ender !== 'undefined');
 		env.isModule = Boolean(typeof module !== 'undefined' && module.exports);
 		env.hasRequire = Boolean(typeof require === 'function');
@@ -140,7 +140,7 @@
 	//----------------------------------------
 
 	Doml = function (doc) {
-		if (! doc && env.isBowser) {
+		if (! doc && env.isBrowser) {
 			doc = env.global.window.document;
 		}
 		this.document = doc;
@@ -181,23 +181,22 @@
 	// setup environment
 	//----------------------------------------
 
+	Domil_orig = context.Doml;
+
 	if (env.isEnder) {
 		module.exports = new Doml();
+	} else if (env.isBrowser) {
+		Doml.noConflict = function () {
+			context.Doml = Domil_orig;
+			return Doml;
+		};
+		context.Doml = Doml;
 	} else if (env.isModule) {
 		module.exports = Doml;
 		Doml.noConflict = function () {};
 	} else {
-		!function () {
-			var	old;
-			old = context.Doml;
-			Doml.noConflict = function () {
-				context.Doml = old;
-				return Doml;
-			};
-			return this;
-		}();
-		context.Doml = Doml;
+		throw new Error('Doml: can not determine the environment!');
 	}
-
+	
 
 }(this);

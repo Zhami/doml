@@ -6,7 +6,7 @@
 	
 	$.ender({
 		doml: function () {
-			return d.create.apply(d, arguments);
+			return $([d.create.apply(d, arguments)]);
 		}
 	});
 
@@ -18,5 +18,9 @@
 			})
 		}
 	}, true);	
+
+	$.id = function (id) {
+		return $([document.getElementById(id)]);
+	};
 
 }(ender || $);

@@ -36,12 +36,17 @@
 			test('noConflict() method should restore original', 1, function() {
 				ok(context.Doml() === 'original', 'Doml() is original');
 			});
+			test('evaluate constructor method', 1, function() {
+				elem = doml.create('div', 'hello');
+				ok(elem.constructor.toString().match(/HTMLDivElement/), 'elem constructor matches HTMLDivElement')
+			});
 		}
+
 
 		test('element creation #1', 7, function() {
 			elem = doml.create('div', 'hello');
 			body.appendChild(elem);
-			ok(elem.nodeName === 'DIV', 'element has proper tag');
+			ok(elem.nodeName === 'DIV', 'element has proper nodeName');
 			ok(document.getElementsByTagName('DIV')[0] === elem, 'got elem by tagName');
 			ok(elem.innerHTML === 'hello', 'has proper text');
 			ok(!elem.getAttribute('id'), 'has no ID');
