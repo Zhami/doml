@@ -1,10 +1,21 @@
+// Ender "bridge"
+
 !function ($) {
 	
-	var	D = Doml;
+	var	d = new Doml();
+	
+	$.ender({
+		doml: function () {
+			return d.create.apply(d, arguments);
+		}
+	});
 
-	$ender({
-		doml: function (v) {
-		
+	$.ender({
+		doml: function () {
+			this.forEach(function (el) {
+				var element = d.create.apply(d, arguments);
+				el.appendChild(element);
+			})
 		}
 	}, true);	
 

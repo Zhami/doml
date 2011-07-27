@@ -134,7 +134,7 @@
 			procArg.call(this, arg);
 		}
 	};
-
+	
 	//----------------------------------------
 	// Constructor
 	//----------------------------------------
@@ -172,14 +172,18 @@
 		
 		setDocument: function (doc) {
 			this.document = doc;
-		}
+		},
+		
+		verbose: false
 	};
 
 	//----------------------------------------
 	// setup environment
 	//----------------------------------------
 
-	if (env.isModule) {
+	if (env.isEnder) {
+		module.exports = new Doml();
+	} else if (env.isModule) {
 		module.exports = Doml;
 		Doml.noConflict = function () {};
 	} else {
