@@ -100,7 +100,7 @@
 
   !function (context) {
   
-  	var	contextDoc, createNode, doml, Doml, env, getGlobal, isArray, procArgs, procTag ,say;
+  	var	contextDoc, createNode, doml, Doml, env, getGlobal, isArray, procArgs, procTag;
   
   //	var sys = require('sys');
   //	var	eyes = require('eyes');
@@ -148,9 +148,9 @@
   
   	createNode = function () {
   		var	element, i, n, s, setAttr;
-  		
+  
   		setAttr = function (elem, name, value) {
-  			
+  
   			switch (name) {
   			case "checked":
   			case "selected":
@@ -164,10 +164,10 @@
   				elem.setAttribute(name, value);
   			}
   		};
- 
+  
   		// create the element
   		element = this.document.createElement(this.tagName);
- 		
+  
   		// set Attributes
   		s = this.attrs;
   		for (n in s) {
@@ -179,13 +179,12 @@
   		if (s && (s =  this.content)) {
   			element.innerHTML = s;
   		}
-
   		return element;
   	};
-  	
+  
   	getText = function (elem) {
   		var node;
-  		
+  
   	};
   
   	procArg = function (arg) {
@@ -235,14 +234,7 @@
   			procArg.call(this, arg);
   		}
   	};
- 
-	say = function () {
-		if (this.verbose) {
-console.log('say: arguments:', arguments)
-			console.log.apply(null, ['test']);
-		}
-	};
- 
+  
   	//----------------------------------------
   	// Constructor
   	//----------------------------------------
@@ -263,13 +255,13 @@ console.log('say: arguments:', arguments)
   			this.attrs = {};
   			this.elems = [];
   		},
-  		
+  
   		create: function () {
   			var	rootNode;
   
-			this.clear();
+  			this.clear();
   			procArgs.call(this, arguments);
-
+  
   			if (!this.document || !this.tagName) {
   				return null;
   			} else {
@@ -277,21 +269,21 @@ console.log('say: arguments:', arguments)
   				return rootNode;
   			}
   		},
-  		
+  
   		setDocument: function (doc) {
   			this.document = doc;
   		},
-
-		verbose: false
+  
+  		verbose: false
   	};
   
   	//----------------------------------------
   	// setup environment
   	//----------------------------------------
   
-	if (env.isEnder) {
-		module.exports = new Doml();
-	} else if (env.isModule) {
+  	if (env.isEnder) {
+  		module.exports = new Doml();
+  	} else if (env.isModule) {
   		module.exports = Doml;
   		Doml.noConflict = function () {};
   	} else {
@@ -312,25 +304,26 @@ console.log('say: arguments:', arguments)
 
   provide("doml", module.exports);
 
+  // Ender "bridge"
+  
   !function ($) {
   	
-	var	d = require('doml');
-
-	$.ender({
-		doml: function () {
-			return d.create.apply(d, arguments);
-		}
-	});
-
-	$.ender({
-		doml: function () {
-			console.log('$.doml invoked for chain...');
-			this.forEach(function (el) {
-				var element = d.create.apply(d, arguments);
-				el.appendChild(element);
-			})
-		}
-	}, true);	
+    	var	d = require('doml');
+  	
+  	$.ender({
+  		doml: function () {
+  			return d.create.apply(d, arguments);
+  		}
+  	});
+  
+  	$.ender({
+  		doml: function () {
+  			this.forEach(function (el) {
+  				var element = d.create.apply(d, arguments);
+  				el.appendChild(element);
+  			})
+  		}
+  	}, true);	
   
   }(ender || $);
 
