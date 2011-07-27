@@ -4,11 +4,14 @@ A DOM constructor. Because sometimes you're just wantn' something simple.
 
 Designed for quick DOM node construction. Compare it to [Builder](https://github.com/syntacticx/builder)
 
+SLOW DOWN -- still under much development -- not an accurate README yet
+=======
+
 It works like this:
 
 ``` js
 if (bowser.msie && bowser.version <= 6) {
-  alert('Hello Zaml');
+  alert('Hello Doml');
 }
 ```
 
