@@ -2,7 +2,7 @@
 
 !function ($) {
 	
-	var	d = new Doml();
+  	var	d = require('doml');
 	
 	$.ender({
 		doml: function () {
