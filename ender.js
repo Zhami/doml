@@ -98,6 +98,12 @@
 
   var module = { exports: {} }, exports = module.exports;
 
+  /*!
+    * Doml - a DOM constructor
+    * copyright Stuart Malin 2011
+    * https://github.com/zhami/doml
+    * MIT License
+    */
   !function (context) {
   
   	var	contextDoc, createNode, doml, Doml, Domil_orig, env, getGlobal, isArray, isNode, procArgs, procTag;
@@ -325,12 +331,12 @@
   	});
   
   	$.ender({
-  		doml: function () {
-  			this.forEach(function (el) {
-  				var element = d.create.apply(d, arguments);
-  				el.appendChild(element);
-  			})
-  		}
+   		doml: function () {
+  			var element = d.create.apply(d, arguments);
+    			this.forEach(function (el) {
+    				el.appendChild(d.create.call(d, element));
+    			})
+    		}
   	}, true);	
   
   	$.id = function (id) {

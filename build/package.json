@@ -1,0 +1,5 @@
+{
+	"ender": "../src/ender.js",
+	"main": "../src/doml.js",
+	"name": "doml",
+}

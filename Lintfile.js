@@ -1,3 +1,3 @@
 require('smoosh')
-	.config('./config/smoosh.json')
+	.config('./build/smoosh.json')
 	.run();		// runs jshint on full build
