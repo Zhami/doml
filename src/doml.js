@@ -2,8 +2,8 @@
 
 	var	Doml, env, isArray, isNode;
 
-	var sys = require('sys');
-	var	eyes = require('eyes');
+//	var sys = require('sys');
+//	var	eyes = require('eyes');
 
 
 	//----------------------------------------
@@ -150,9 +150,13 @@
 		//----------------------------------------
 		return {
 			create: function () {
-				procArgs.call(this, arguments);
-				if (this.tagName) {
-					createElement.apply(this);
+				if ((arguments.length === 1) && isNode(node = arguments[0])) {
+					this.element = node.cloneNode(true);
+				} else {
+					procArgs.call(this, arguments);
+					if (this.tagName) {
+						createElement.apply(this);
+					}
 				}
 			},
 			getElement: function () {
@@ -177,13 +181,9 @@
 
 		create: function () {
 			var	node;
-			if ((arguments.length === 1) && isNode(node = arguments[0])) {
-				return node.cloneNode(true);
-			} else {
-				node = new Element(this.document);
-				node.create.apply(node, arguments);
-				return node.getElement();
-			}
+			node = new Element(this.document);
+			node.create.apply(node, arguments);
+			return node.getElement();
 		},
 
 		noConflict: function () {},
