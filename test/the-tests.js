@@ -108,6 +108,21 @@
 			ok(elem.selected, 'is selected');
 		});
 
+		test('element creation #6: child node', 3, function() {
+			elem = doml.create('p', doml.create('span'));
+			ok(elem.nodeName === 'P', 'element has proper tag');
+			ok(elem.children.length === 1, 'element has 1 child');
+			ok(elem.firstChild.nodeName === 'SPAN', 'child has proper tag');
+		});
+
+		test('element creation #7: two child nodes', 4, function() {
+			elem = doml.create('div', doml.create('p'), doml.create('span'));
+			ok(elem.nodeName === 'DIV', 'element has proper tag');
+			ok(elem.children.length === 2, 'element has 2 children');
+			ok(elem.firstChild.nodeName === 'P', '1st child has proper tag');
+			ok(elem.firstChild.nextSibling.nodeName === 'SPAN', '2nd child has proper tag');
+		});
+
 	});
 
 

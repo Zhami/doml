@@ -52,7 +52,7 @@
 		this.tagName = undefined;
 		this.content = '';
 		this.attrs = {};
-		this.elems = [];
+		this.elems = [];	// will be made children
 	};
 
 	Element.prototype = (function () {
@@ -63,7 +63,7 @@
 		//----------------------------------------
 
 		createElement = function () {
-			var	element, i, n, s, setAttr;
+			var	element, i, n, ptr, s, setAttr;
 
 			setAttr = function (elem, name, value) {
 
@@ -95,12 +95,25 @@
 			if (s && (s =  this.content)) {
 				element.innerHTML = s;
 			}
+			
+			// add children elements
+			ptr = this.elems;
+			n = ptr.length;
+			for (i = 0; i < n; i += 1) {
+				element.appendChild(ptr[i]);
+			}
 		};
 
 		procArg = function (arg) {
 			var	i, n, ptr, t;
 			t = isArray(arg) ? 'array' : typeof arg;
+			if (t === 'object' && isNode(arg)) {
+				t = 'node';
+			}
 			switch (t) {
+			case 'node':
+				this.elems.push(arg);
+				break;
 			case 'string':
 				this.content += arg;
 				break;
