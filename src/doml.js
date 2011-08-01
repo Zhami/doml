@@ -66,7 +66,6 @@
 			var	element, i, n, ptr, s, setAttr;
 
 			setAttr = function (elem, name, value) {
-
 				switch (name) {
 				case "checked":
 				case "selected":
@@ -95,11 +94,12 @@
 			if (s && (s =  this.content)) {
 				element.innerHTML = s;
 			}
-			
+
 			// add children elements
 			ptr = this.elems;
 			n = ptr.length;
 			for (i = 0; i < n; i += 1) {
+console.log('createElement: adding a child of type: ' + ptr[i].nodeName);
 				element.appendChild(ptr[i]);
 			}
 		};
@@ -112,6 +112,7 @@
 			}
 			switch (t) {
 			case 'node':
+console.log('procArg: have an element: ' + arg.nodeName);
 				this.elems.push(arg);
 				break;
 			case 'string':
@@ -163,13 +164,9 @@
 		//----------------------------------------
 		return {
 			create: function () {
-				if ((arguments.length === 1) && isNode(node = arguments[0])) {
-					this.element = node.cloneNode(true);
-				} else {
-					procArgs.call(this, arguments);
-					if (this.tagName) {
-						createElement.apply(this);
-					}
+				procArgs.call(this, arguments);
+				if (this.tagName) {
+					createElement.apply(this);
 				}
 			},
 			getElement: function () {
@@ -177,7 +174,6 @@
 			}
 		};
 	})();
-
 
 	//----------------------------------------
 	// Constructor
@@ -194,9 +190,13 @@
 
 		create: function () {
 			var	node;
-			node = new Element(this.document);
-			node.create.apply(node, arguments);
-			return node.getElement();
+			if ((arguments.length === 1) && isNode(node = arguments[0])) {
+				return node.cloneNode(true);
+			} else {
+				node = new Element(this.document);
+				node.create.apply(node, arguments);
+				return node.getElement();
+			}
 		},
 
 		noConflict: function () {},

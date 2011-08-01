@@ -12,9 +12,13 @@
 
 	$.ender({
  		doml: function () {
-			var element = d.create.apply(d, arguments);
-  			this.forEach(function (el) {
-  				el.appendChild(d.create.call(d, element));
+			var element = d.create.apply(d, arguments);		// a shiny new element
+  			this.forEach(function (el, index) {
+				if (index) {
+					// if we are appending to more than one element, then clone a new copy
+					element = d.create.call(d, element);
+				}
+  				el.appendChild(element);
   			})
   		}
 	}, true);	

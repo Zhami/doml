@@ -13,7 +13,6 @@
 		startSink();
 	};
 
-
 	sink('Doml', function(test, ok, before, after) {
 		var elem, enderSet;
 		
@@ -59,7 +58,29 @@
 			ok(elem.innerHTML === 'hello', 'has proper text');
 			body.removeChild(elem);
 		});
-		
+
+		test('doml appends supplied node as child', 3, function() {
+			enderSet = $.doml('span', 'a span');
+			elem = enderSet[0];
+console.log('ender test: have an elem: ', elem);
+$(body).doml(elem);
+// what should the above do?
+//			$(body).doml('p', 'hello', elem);
+			elem = body.lastChild;
+			ok(elem.nodeName === 'P', 'element has proper tag');
+			ok(elem.children.length === 1, 'element has 1 child');
+			ok(elem.firstChild.nodeName === 'SPAN', 'child has proper tag');
+		});
+		/*
+		test('embedded $.doml creates child node', 4, function() {
+			elem = $.doml('div', $.doml('p')[0], $.doml('span')[0]);
+			elem = body.lastChild;
+			ok(elem.nodeName === 'DIV', 'element has proper tag');
+			ok(elem.children.length === 2, 'element has 2 children');
+			ok(elem.firstChild.nodeName === 'P', '1st child has proper tag');
+			ok(elem.firstChild.nextSibling.nodeName === 'SPAN', '2nd child has proper tag');
+		});
+*/		
 	});
 
 	context.tests = {

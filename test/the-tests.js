@@ -42,9 +42,11 @@
 			});
 		}
 
-		test('node cloning', 1, function() {
+		test('node cloning', 2, function() {
+			var	newElem;
 			elem = document.getElementById('the-span');
-			elem = doml.create(elem);
+			newElem = doml.create(elem);
+			ok(newElem !== elem, 'cloned element is not original element');
 			ok(elem.nodeName === 'SPAN', 'cloned element has proper nodeName');
 		});
 
