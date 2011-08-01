@@ -50,6 +50,11 @@
 			ok(elem.nodeName === 'SPAN', 'cloned element has proper nodeName');
 		});
 
+		test('element creation: first argument is array should fail', 1, function() {
+			elem = doml.create(['div', 'text1']);
+			ok(!elem, 'element not created');
+		});
+
 		test('element creation: basic', 7, function() {
 			elem = doml.create('div', 'hello');
 			body.appendChild(elem);
@@ -108,8 +113,42 @@
 		test('element creation: mixed text and child nodes', 9, function() {
 			elem = doml.create('div', 'text1', doml.create('p', 'p-text'), 'text2', doml.create('span', 'span-text'));
 			ok(elem.nodeName === 'DIV', 'element has proper tag');
-			ok(elem.children.length === 2, 'element has proper (element) children');
-			ok(elem.childNodes.length === 4, 'element has proper (elements & text) children');
+			ok(elem.children.length === 2, 'element has proper number of (element) children');
+			ok(elem.childNodes.length === 4, 'element has proper number of (elements & text) children');
+			elem = elem.firstChild;
+			ok(elem.nodeType === 3, '1st child is proper type');
+			ok(elem.nodeValue === 'text1', '1st child has proper text');
+			elem = elem.nextSibling;
+			ok(elem.nodeName === 'P', '2nd child has proper tag');
+			elem = elem.nextSibling;
+			ok(elem.nodeType === 3, '3rd child is proper type');
+			ok(elem.nodeValue === 'text2', '3rd child has proper text');
+			elem = elem.nextSibling;
+			ok(elem.nodeName === 'SPAN', '4th child has proper tag');
+		});
+
+		test('element creation: array argument for child', 9, function() {
+			elem = doml.create('div', 'text1', ['p', 'p-text'], 'text2', ['span', 'span-text']);
+			ok(elem.nodeName === 'DIV', 'element has proper tag');
+			ok(elem.children.length === 2, 'element has proper number of (element) children');
+			ok(elem.childNodes.length === 4, 'element has proper number of (elements & text) children');
+			elem = elem.firstChild;
+			ok(elem.nodeType === 3, '1st child is proper type');
+			ok(elem.nodeValue === 'text1', '1st child has proper text');
+			elem = elem.nextSibling;
+			ok(elem.nodeName === 'P', '2nd child has proper tag');
+			elem = elem.nextSibling;
+			ok(elem.nodeType === 3, '3rd child is proper type');
+			ok(elem.nodeValue === 'text2', '3rd child has proper text');
+			elem = elem.nextSibling;
+			ok(elem.nodeName === 'SPAN', '4th child has proper tag');
+		});
+
+		test('element creation: array of arrays argument for children', 9, function() {
+			elem = doml.create('div', 'text1', [['p', 'p-text'], 'text2', ['span', 'span-text']]);
+			ok(elem.nodeName === 'DIV', 'element has proper tag');
+			ok(elem.children.length === 2, 'element has proper number of (element) children');
+			ok(elem.childNodes.length === 4, 'element has proper number of (elements & text) children');
 			elem = elem.firstChild;
 			ok(elem.nodeType === 3, '1st child is proper type');
 			ok(elem.nodeValue === 'text1', '1st child has proper text');

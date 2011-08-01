@@ -94,7 +94,7 @@
 		};
 
 		procArg = function (arg) {
-			var	i, n, ptr, t;
+			var	i, n, node, subArg, t;
 			t = isArray(arg) ? 'array' : typeof arg;
 			if (t === 'object' && isElementNode(arg)) {
 				t = 'node';
@@ -108,10 +108,31 @@
 				this.allowTextNodes && this.element.appendChild(document.createTextNode(arg));
 				break;
 			case 'array':
-				// elements
-				n = arg.length;
-				for (i = 0; i < n; i += 1) {
-// FIXME: need to recurse					
+				subArg = arg[0];
+				if (typeof subArg === 'string') {
+					// treat the array content as arguments for a child
+					node = new Element(this.document);
+					node.create.apply(node, arg);
+					node = node.getElement();
+					this.element.appendChild(node);
+				} else if (isArray(subArg)) {
+					// recurse
+					n = arg.length;
+					for (i = 0; i < n; i += 1) {
+						subArg = arg[i];
+						node = new Element(this.document);
+						if (isArray(subArg)) {
+							node.create.apply(node, subArg);
+							node = node.getElement();
+							this.element.appendChild(node);
+						} else {
+							// treat as an argument of the current element
+							procArg.call(this, subArg);
+						}
+					}
+				} else {
+					// treat as an argument of the current element
+					procArg.call(this, subArg);
 				}
 				break;
 			case 'object':
