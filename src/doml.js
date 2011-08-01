@@ -99,7 +99,6 @@
 			ptr = this.elems;
 			n = ptr.length;
 			for (i = 0; i < n; i += 1) {
-console.log('createElement: adding a child of type: ' + ptr[i].nodeName);
 				element.appendChild(ptr[i]);
 			}
 		};
@@ -112,7 +111,6 @@ console.log('createElement: adding a child of type: ' + ptr[i].nodeName);
 			}
 			switch (t) {
 			case 'node':
-console.log('procArg: have an element: ' + arg.nodeName);
 				this.elems.push(arg);
 				break;
 			case 'string':

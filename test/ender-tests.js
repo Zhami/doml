@@ -62,25 +62,24 @@
 		test('doml appends supplied node as child', 3, function() {
 			enderSet = $.doml('span', 'a span');
 			elem = enderSet[0];
-console.log('ender test: have an elem: ', elem);
-$(body).doml(elem);
-// what should the above do?
-//			$(body).doml('p', 'hello', elem);
-			elem = body.lastChild;
+			$(body).doml('p', 'hello', elem);
+			elem = body.lastElementChild;
 			ok(elem.nodeName === 'P', 'element has proper tag');
 			ok(elem.children.length === 1, 'element has 1 child');
-			ok(elem.firstChild.nodeName === 'SPAN', 'child has proper tag');
+			ok(elem.firstElementChild.nodeName === 'SPAN', 'child has proper tag');
+			body.removeChild(elem);
 		});
-		/*
-		test('embedded $.doml creates child node', 4, function() {
-			elem = $.doml('div', $.doml('p')[0], $.doml('span')[0]);
-			elem = body.lastChild;
+
+		test('doml appends supplied nodes as children', 4, function() {
+			$(body).doml('div', $.doml('p')[0], $.doml('span')[0]);
+			elem = body.lastElementChild;
 			ok(elem.nodeName === 'DIV', 'element has proper tag');
 			ok(elem.children.length === 2, 'element has 2 children');
-			ok(elem.firstChild.nodeName === 'P', '1st child has proper tag');
-			ok(elem.firstChild.nextSibling.nodeName === 'SPAN', '2nd child has proper tag');
+			ok(elem.firstElementChild.nodeName === 'P', '1st child has proper tag');
+			ok(elem.firstElementChild.nextSibling.nodeName === 'SPAN', '2nd child has proper tag');
+			body.removeChild(elem);
 		});
-*/		
+
 	});
 
 	context.tests = {
