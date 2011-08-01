@@ -50,7 +50,7 @@
 			ok(elem.nodeName === 'SPAN', 'cloned element has proper nodeName');
 		});
 
-		test('element creation #1', 7, function() {
+		test('element creation: basic', 7, function() {
 			elem = doml.create('div', 'hello');
 			body.appendChild(elem);
 			ok(elem.nodeName === 'DIV', 'element has proper nodeName');
@@ -63,7 +63,7 @@
 			body.removeChild(elem);
 		});
 
-		test('element creation #2', 7, function() {
+		test('element creation: attributes', 7, function() {
 			elem = doml.create('li', {id:'myID', className: 'myClass', selected: true});
 			body.appendChild(elem);		// in Browser, must be appended to be able to getById
 			ok(elem.nodeName === 'LI', 'element has proper tag');
@@ -76,7 +76,7 @@
 			body.removeChild(elem);
 		});
 
-		test('element creation #3', 4, function() {
+		test('element creation: text', 4, function() {
 			elem = doml.create('p', 'hello', 'world');
 			ok(elem.nodeName === 'P', 'element has proper tag');
 			ok(elem.innerHTML === 'helloworld', 'has proper text');
@@ -84,18 +84,45 @@
 			ok(elem.className === '', 'has no class');
 		});
 
-		test('element creation #4', 7, function() {
+		test('element creation: ignore text for certain tags', 2, function() {
 			elem = doml.create('input', 'input', {type:'checkbox', checked: true});
 			ok(elem.nodeName === 'INPUT', 'element has proper tag');
 			ok(!elem.innerHTML, 'has no text');
-			ok(!elem.getAttribute('id'), 'has no ID');
-			ok(elem.getAttribute('type') === 'checkbox', 'has type attribute');
-			ok(elem.className === '', 'has no class');
-			ok(elem.checked, 'is checked');
-			ok(!elem.selected, 'is not selected');
 		});
 
-		test('element creation #5', 8, function() {
+		test('element creation: child node', 3, function() {
+			elem = doml.create('p', doml.create('span'));
+			ok(elem.nodeName === 'P', 'element has proper tag');
+			ok(elem.children.length === 1, 'element has 1 child');
+			ok(elem.firstChild.nodeName === 'SPAN', 'child has proper tag');
+		});
+
+		test('element creation: two child nodes', 4, function() {
+			elem = doml.create('div', doml.create('p'), doml.create('span'));
+			ok(elem.nodeName === 'DIV', 'element has proper tag');
+			ok(elem.children.length === 2, 'element has 2 children');
+			ok(elem.firstChild.nodeName === 'P', '1st child has proper tag');
+			ok(elem.firstChild.nextSibling.nodeName === 'SPAN', '2nd child has proper tag');
+		});
+
+		test('element creation: mixed text and child nodes', 9, function() {
+			elem = doml.create('div', 'text1', doml.create('p', 'p-text'), 'text2', doml.create('span', 'span-text'));
+			ok(elem.nodeName === 'DIV', 'element has proper tag');
+			ok(elem.children.length === 2, 'element has proper (element) children');
+			ok(elem.childNodes.length === 4, 'element has proper (elements & text) children');
+			elem = elem.firstChild;
+			ok(elem.nodeType === 3, '1st child is proper type');
+			ok(elem.nodeValue === 'text1', '1st child has proper text');
+			elem = elem.nextSibling;
+			ok(elem.nodeName === 'P', '2nd child has proper tag');
+			elem = elem.nextSibling;
+			ok(elem.nodeType === 3, '3rd child is proper type');
+			ok(elem.nodeValue === 'text2', '3rd child has proper text');
+			elem = elem.nextSibling;
+			ok(elem.nodeName === 'SPAN', '4th child has proper tag');
+		});
+
+		test('element creation: function invocation', 8, function() {
 			elem = doml.create('div', 'hello', {className: "myClass", "id": "myID", myAttr: 3}, function (ctxt) {
 				console.log('==> anon function invoked');
 				return {checked: 1, selected: true};
@@ -110,20 +137,6 @@
 			ok(elem.selected, 'is selected');
 		});
 
-		test('element creation #6: child node', 3, function() {
-			elem = doml.create('p', doml.create('span'));
-			ok(elem.nodeName === 'P', 'element has proper tag');
-			ok(elem.children.length === 1, 'element has 1 child');
-			ok(elem.firstChild.nodeName === 'SPAN', 'child has proper tag');
-		});
-
-		test('element creation #7: two child nodes', 4, function() {
-			elem = doml.create('div', doml.create('p'), doml.create('span'));
-			ok(elem.nodeName === 'DIV', 'element has proper tag');
-			ok(elem.children.length === 2, 'element has 2 children');
-			ok(elem.firstChild.nodeName === 'P', '1st child has proper tag');
-			ok(elem.firstChild.nextSibling.nodeName === 'SPAN', '2nd child has proper tag');
-		});
 
 	});
 

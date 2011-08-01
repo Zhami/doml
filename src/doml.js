@@ -1,6 +1,6 @@
 !function (context) {
 
-	var	Doml, env, isArray, isNode;
+	var	Doml, env, isArray, isElementNode;
 
 //	var sys = require('sys');
 //	var	eyes = require('eyes');
@@ -35,7 +35,7 @@
 		return Boolean(x && (Object.prototype.toString.apply(x) === '[object Array]'));
 	};
 
-	isNode = function (node) {
+	isElementNode = function (node) {
 		return node && node.nodeName && node.nodeType == 1;
 	};
 
@@ -48,22 +48,19 @@
 			return null;
 		}
 		this.document = doc;
-		this.element = null;
-		this.tagName = undefined;
-		this.content = '';
-		this.attrs = {};
-		this.elems = [];	// will be made children
+		this.element = null;			// the HTML element
+		this.allowTextNodes = false;	// true if the tag can have text
 	};
 
 	Element.prototype = (function () {
-		var	createElement, procArg, procArgs;
+		var	handleAttrs, procArg;
 
 		//----------------------------------------
 		// private methods
 		//----------------------------------------
 
-		createElement = function () {
-			var	element, i, n, ptr, s, setAttr;
+		handleAttrs = function (attrs) {
+			var	element, n, setAttr;
 
 			setAttr = function (elem, name, value) {
 				switch (name) {
@@ -79,59 +76,47 @@
 					elem.setAttribute(name, value);
 				}
 			};
-
-			// create the element
-			this.element = element = this.document.createElement(this.tagName);
+			
+			element = this.element;
 
 			// set Attributes
-			s = this.attrs;
-			for (n in s) {
-				s.hasOwnProperty(n) && setAttr(element, n, s[n]);
+			for (n in attrs) {
+				attrs.hasOwnProperty(n) && setAttr(element, n, attrs[n]);
 			}
+		};
 
-			// add text (but not to nodes that don't allow it)
-			s = !/^input$/.test(this.tagName.toLowerCase());
-			if (s && (s =  this.content)) {
-				element.innerHTML = s;
-			}
-
-			// add children elements
-			ptr = this.elems;
-			n = ptr.length;
-			for (i = 0; i < n; i += 1) {
-				element.appendChild(ptr[i]);
-			}
+		handleTag = function (tagName) {
+			// create the element
+			this.element = this.document.createElement(tagName);
+			
+			// set flag if tag allows text nodes
+			this.allowTextNodes = Boolean(!/^input$/.test(tagName.toLowerCase()));
 		};
 
 		procArg = function (arg) {
 			var	i, n, ptr, t;
 			t = isArray(arg) ? 'array' : typeof arg;
-			if (t === 'object' && isNode(arg)) {
+			if (t === 'object' && isElementNode(arg)) {
 				t = 'node';
 			}
 			switch (t) {
 			case 'node':
-				this.elems.push(arg);
+				this.element.appendChild(arg);
 				break;
 			case 'string':
-				this.content += arg;
+				// add a text node (if the element supports text)
+				this.allowTextNodes && this.element.appendChild(document.createTextNode(arg));
 				break;
 			case 'array':
 				// elements
 				n = arg.length;
-				ptr = this.elems;
 				for (i = 0; i < n; i += 1) {
-					ptr.push(arg[i]);
+// FIXME: need to recurse					
 				}
 				break;
 			case 'object':
 				// attributes
-				ptr = this.attrs;
-				for (n in arg) {
-					if (arg.hasOwnProperty(n)) {
-						ptr[n] = arg[n];
-					}
-				}
+				handleAttrs.call(this,arg);
 				break;
 			case 'function':
 				t = arg.call(this);
@@ -142,29 +127,28 @@
 			}
 		};
 
-		procArgs = function (origArgs) {
-			var	arg, args, i, numArgs;
-
-			args = Array.prototype.slice.call(origArgs, 0);
-			numArgs = args.length;
-			if ((numArgs === 0) || (typeof args[0] !== 'string')) {
-				return;
-			}
-			this.tagName = args[0];
-			for (i = 1; i < numArgs; i += 1) {
-				arg = args[i];
-				procArg.call(this, arg);
-			}
-		};
 
 		//----------------------------------------
 		// public methods
 		//----------------------------------------
 		return {
 			create: function () {
-				procArgs.call(this, arguments);
-				if (this.tagName) {
-					createElement.apply(this);
+				var	arg, args, i, numArgs;
+
+				// transform arguments into a real array
+				args = Array.prototype.slice.call(arguments, 0);
+				numArgs = args.length;
+				if ((numArgs === 0) || (typeof args[0] !== 'string')) {
+					return;
+				}
+
+				// create the Element from the tagName
+				handleTag.call(this, args[0]);
+
+				//process rest of arguments
+				for (i = 1; i < numArgs; i += 1) {
+					arg = args[i];
+					procArg.call(this, arg);
 				}
 			},
 			getElement: function () {
@@ -188,7 +172,7 @@
 
 		create: function () {
 			var	node;
-			if ((arguments.length === 1) && isNode(node = arguments[0])) {
+			if ((arguments.length === 1) && isElementNode(node = arguments[0])) {
 				return node.cloneNode(true);
 			} else {
 				node = new Element(this.document);
