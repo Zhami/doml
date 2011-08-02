@@ -127,7 +127,7 @@
 			ok(elem.nodeName === 'SPAN', '4th child has proper tag');
 		});
 
-		test('element creation: array argument for child', 9, function() {
+		test('element creation: array arguments for children', 9, function() {
 			elem = doml.create('div', 'text1', ['p', 'p-text'], 'text2', ['span', 'span-text']);
 			ok(elem.nodeName === 'DIV', 'element has proper tag');
 			ok(elem.children.length === 2, 'element has proper number of (element) children');
@@ -142,6 +142,31 @@
 			ok(elem.nodeValue === 'text2', '3rd child has proper text');
 			elem = elem.nextSibling;
 			ok(elem.nodeName === 'SPAN', '4th child has proper tag');
+		});
+
+		test('element creation: array of nodes', 7, function() {
+			elem = doml.create('div', [doml.create('p', 'p-text'), doml.create('span', 'span-text')]);
+			ok(elem.nodeName === 'DIV', 'element has proper tag');
+			ok(elem.children.length === 2, 'element has proper number of (element) children');
+			ok(elem.childNodes.length === 2, 'element has proper number of (elements & text) children');
+			elem = elem.firstChild;
+			ok(elem.nodeName === 'P', '1st child has proper tag');
+			ok(elem.innerHTML === 'p-text', '1st child has proper text');
+			elem = elem.nextSibling;
+			ok(elem.nodeName === 'SPAN', '2nd child has proper tag');
+			ok(elem.innerHTML === 'span-text', '2nd child has proper text');
+		});
+
+		test('element creation: array of mixed arguments', 7, function() {
+			elem = doml.create('div', [doml.create('p', 'p-text'), 'hello', {"id": "myID"}]);
+			ok(elem.nodeName === 'DIV', 'element has proper tag');
+			ok(elem.getAttribute('id') === 'myID', 'element has proper ID');
+			ok(elem.children.length === 1, 'element has proper number of (element) children');
+			ok(elem.childNodes.length === 2, 'element has proper number of (elements & text) children');
+			ok(elem.lastChild.nodeValue === 'hello', 'element has proper text');
+			elem = elem.firstChild;
+			ok(elem.nodeName === 'P', '1st child has proper tag');
+			ok(elem.innerHTML === 'p-text', '1st child has proper text');
 		});
 
 		test('element creation: array of arrays argument for children', 9, function() {
@@ -161,21 +186,49 @@
 			ok(elem.nodeName === 'SPAN', '4th child has proper tag');
 		});
 
-		test('element creation: function invocation', 8, function() {
-			elem = doml.create('div', 'hello', {className: "myClass", "id": "myID", myAttr: 3}, function (ctxt) {
-				console.log('==> anon function invoked');
-				return {checked: 1, selected: true};
-			});
+		test('element creation: function invocation returns nothing', 3, function() {
+			elem = doml.create('div', 'hello', function (args) {}, {text: 'hello'}, 'final');
 			ok(elem.nodeName === 'DIV', 'element has proper tag');
-			ok(elem.innerHTML === 'hello', 'has proper text value');
-			ok(elem.getAttribute('id') === 'myID', 'has ID');
-			ok(elem.getAttribute('myAttr') === "3", 'has attribute');
-			ok(!elem.getAttribute('type'), 'has no type attribute');
-			ok(elem.className === 'myClass', 'has class');
-			ok(elem.checked, 'is checked');
-			ok(elem.selected, 'is selected');
+			ok(elem.children.length === 0, 'element has proper number of (element) children');
+			ok(elem.childNodes.length === 2, 'element has proper number of (elements & text) children');
 		});
 
+		test('element creation: function invocation returns an element', 11, function() {
+			elem = doml.create('div', 'hello', function (args) {
+				return doml.create('p', args.text, {className: args.className, "id": args.id});
+			}, {className: "myClass", "id": "myID", text: 'hello'}, 'final');
+			ok(elem.nodeName === 'DIV', 'element has proper tag');
+			ok(elem.children.length === 1, 'element has proper number of (element) children');
+			ok(elem.childNodes.length === 3, 'element has proper number of (elements & text) children');
+			elem = elem.firstChild;
+			ok(elem.nodeType === 3, '1st child is proper type');
+			ok(elem.nodeValue === 'hello', '1st child has proper text');
+			elem = elem.nextSibling;
+			ok(elem.nodeName === 'P', 'function generated child element has proper tag');
+			ok(elem.innerHTML === 'hello', 'function generated child has proper text value');
+			ok(elem.getAttribute('id') === 'myID', 'function generated child has proper ID');
+			ok(elem.className === 'myClass', 'function generated child has proper class');
+			elem = elem.nextSibling;
+			ok(elem.nodeType === 3, '3rd child is proper type');
+			ok(elem.nodeValue === 'final', '3rd child has proper text');
+		});
+
+		test('element creation: function invocation returns array of elements', 6, function() {
+			elem = doml.create('div', function (args) {
+				var elems = [];
+				elems.push(doml.create('p', args.text1));
+				elems.push(doml.create('span', args.text2));
+				return elems;
+			}, {text1: 'text1', text2: 'text2'});
+			ok(elem.children.length === 2, 'element has proper number of (element) children');
+			ok(elem.childNodes.length === 2, 'element has proper number of (elements & text) children');
+			elem = elem.firstChild;
+			ok(elem.nodeName === 'P', '1st child element has proper tag');
+			ok(elem.innerHTML === 'text1', '1st child has proper text value');
+			elem = elem.nextSibling;
+			ok(elem.nodeName === 'SPAN', '2nd child element has proper tag');
+			ok(elem.innerHTML === 'text2', '2nd child has proper text value');
+		});
 
 	});
 

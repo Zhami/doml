@@ -50,6 +50,7 @@
 		this.document = doc;
 		this.element = null;			// the HTML element
 		this.allowTextNodes = false;	// true if the tag can have text
+		this.pendingFunc = null;		// holds a ref to a func that is pending execution awaiting its argument
 	};
 
 	Element.prototype = (function () {
@@ -95,6 +96,14 @@
 
 		procArg = function (arg) {
 			var	i, n, node, subArg, t;
+			
+			if ((t = this.pendingFunc)) {
+				// inoke the pending function with this argument and process the results
+				// the result is processed as if it were the present arg
+				this.pendingFunc = null;	// clear pending state
+				arg = t.call(this, arg);
+			}
+			
 			t = isArray(arg) ? 'array' : typeof arg;
 			if (t === 'object' && isElementNode(arg)) {
 				t = 'node';
@@ -131,8 +140,11 @@
 						}
 					}
 				} else {
-					// treat as an argument of the current element
-					procArg.call(this, subArg);
+					// treat array elements as further arguments of the current element
+					n = arg.length;
+					for (i = 0; i < n; i += 1) {
+						procArg.call(this, arg[i]);
+					}
 				}
 				break;
 			case 'object':
@@ -140,10 +152,8 @@
 				handleAttrs.call(this,arg);
 				break;
 			case 'function':
-				t = arg.call(this);
-				if (t) {
-					procArg.call(this, t);
-				}
+				// the next arg is passed to the function, so for now, just capture the function
+				this.pendingFunc = arg;
 				break;
 			}
 		};
@@ -187,6 +197,7 @@
 			doc = env.global.window.document;
 		}
 		this.document = doc;
+		this.verbose = false;
 	};
 
 	Doml.prototype = {
