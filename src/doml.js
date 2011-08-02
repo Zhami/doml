@@ -77,7 +77,7 @@
 					elem.setAttribute(name, value);
 				}
 			};
-			
+
 			element = this.element;
 
 			// set Attributes
@@ -89,21 +89,21 @@
 		handleTag = function (tagName) {
 			// create the element
 			this.element = this.document.createElement(tagName);
-			
+
 			// set flag if tag allows text nodes
 			this.allowTextNodes = Boolean(!/^input$/.test(tagName.toLowerCase()));
 		};
 
 		procArg = function (arg) {
 			var	i, n, node, subArg, t;
-			
+
 			if ((t = this.pendingFunc)) {
 				// inoke the pending function with this argument and process the results
 				// the result is processed as if it were the present arg
 				this.pendingFunc = null;	// clear pending state
 				arg = t.call(this, arg);
 			}
-			
+
 			t = isArray(arg) ? 'array' : typeof arg;
 			if (t === 'object' && isElementNode(arg)) {
 				t = 'node';
@@ -149,7 +149,7 @@
 				break;
 			case 'object':
 				// attributes
-				handleAttrs.call(this,arg);
+				handleAttrs.call(this, arg);
 				break;
 			case 'function':
 				// the next arg is passed to the function, so for now, just capture the function
