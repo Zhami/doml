@@ -60,13 +60,24 @@ or, add it to your existing ender package
 
     $ ender add doml
 
-Doml requires [Bonzo](https://github.com/ded/bonzo) be in your Ender lib.
-
 Use it like this:
 
 ``` js
-$(body).doml('div', 'hello'); // add a div with text "hello"
+// create an Ender element set
+enderSet = $.doml('div', 'hello');
+
+// clone an element to create an Ender element set
+elem = document.getElementById('the-span');
+enderSet = $.doml(elem);
+
+// chain
+body = document.getElementsByTagName('BODY')[0];
+$(body).doml('div', 'hello');
 ```
+
+Doml does NOT require that [Bonzo](https://github.com/ded/bonzo) be in your Ender lib.
+But that doesn't mean you should incorporate it.
+
 
 Build
 -----
