@@ -19,11 +19,13 @@ document.body.appendChild(el);
 ```
 
 Set attributes:
+
 ``` js
 elem = doml.create('input', 'input', {type:'checkbox', checked: true});
 ```
 
 Embed other DOM nodes:
+
 ``` js
 elem = doml.create('div', 'text1', ['p', 'p-text'], 'text2', ['span', 'span-text']);
 ```
