@@ -54,12 +54,27 @@
 	};
 
 	Element.prototype = (function () {
-		var	handleAttrs, procArg;
+		var	handleAttrs, handleCSS, procArg;
 
 		//----------------------------------------
 		// private methods
 		//----------------------------------------
-
+		handleCSS = function (elem, styleString) {
+			var i, n, styles, s;
+			
+			styles = styleString.split(';');
+			n = styles.length;
+			for (i = 0; i < n; i += 1) {
+				s = styles[i];
+				if (s) {
+					s = /\s*([^:]+):\s*(.+)/.exec(s);
+					if (s && s.length === 3) {
+						elem.style[s[1]] = s[2];
+					}
+				}
+			}
+		};
+		
 		handleAttrs = function (attrs) {
 			var	element, n, setAttr;
 
@@ -72,6 +87,9 @@
 				case "className":
 				case "class":
 					elem.className = value;
+					break;
+				case "css":
+					handleCSS(elem, value);
 					break;
 				default:
 					elem.setAttribute(name, value);

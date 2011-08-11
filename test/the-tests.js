@@ -110,6 +110,13 @@
 			ok(elem.firstChild.nextSibling.nodeName === 'SPAN', '2nd child has proper tag');
 		});
 
+		test('element creation: apply CSS', 3, function() {
+			elem = doml.create('p', 'hello', {css: "color:red; border:2px solid green;"});
+			ok(elem.nodeName === 'P', 'element has proper tag');
+			ok(elem.style.color === "red", 'element has proper color');
+			ok(elem.style.border === "2px solid green", 'element has proper border');
+		});
+
 		test('element creation: mixed text and child nodes', 9, function() {
 			elem = doml.create('div', 'text1', doml.create('p', 'p-text'), 'text2', doml.create('span', 'span-text'));
 			ok(elem.nodeName === 'DIV', 'element has proper tag');
@@ -169,6 +176,22 @@
 			ok(elem.innerHTML === 'p-text', '1st child has proper text');
 		});
 
+		test('element creation: subtree', 9, function() {
+			elem = doml.create('div', ['p', 'hello', {id: "p-hello"}, ['span', 'there']]);
+			ok(elem.nodeName === 'DIV', 'element has proper tag');
+			ok(elem.children.length === 1, 'element has 1 child');
+			elem = elem.firstChild;
+			ok(elem.nodeName === 'P', 'child has proper tag');
+			ok(elem.getAttribute('id') === 'p-hello', 'child has proper ID');
+			ok(elem.children.length === 1, 'child has 1 child');
+			ok(elem.childNodes.length === 2, 'element has proper number of elements & text');
+			elem = elem.firstChild; // text node
+			elem = elem.nextSibling; // SPAN element
+			ok(elem.nodeName === 'SPAN', 'grandchild has proper tag');
+			ok(elem.childNodes.length === 1, 'granchild has proper number of nodes');
+			ok(elem.lastChild.nodeValue === 'there', 'grandchild has proper text');
+		});
+		
 		test('element creation: array of arrays argument for children', 9, function() {
 			elem = doml.create('div', 'text1', [['p', 'p-text'], 'text2', ['span', 'span-text']]);
 			ok(elem.nodeName === 'DIV', 'element has proper tag');

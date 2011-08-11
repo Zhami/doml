@@ -23,6 +23,12 @@ Set attributes:
 elem = doml.create('input', 'input', {type:'checkbox', checked: true});
 ```
 
+Decorate with CSS attributes:
+``` 
+elem = doml.create('p', 'hello', {css: "color:red; border:2px solid green;"});
+Set attributes:
+``` 
+
 Embed other DOM nodes:
 ``` 
 elem = doml.create('div', 'text1', ['p', 'p-text'], 'text2', ['span', 'span-text']);
@@ -72,11 +78,15 @@ enderSet = $.doml(elem);
 
 // chain
 body = document.getElementsByTagName('BODY')[0];
-$(body).doml('div', 'hello');
+$(body).doml('div', 'hello');  // appends new DIV (with text "hello" to BODY)
+
+// construct and append a DOM sub-tree
+$(body).doml('div', ['p', 'hello', {id: "p-hello"}], ['span', 'there', {css: "color:red;"}]);
+$(body).doml('div', $.doml('p')[0], $.doml('span')[0]);
 ```
 
-Doml does NOT require that [Bonzo](https://github.com/ded/bonzo) be in your Ender lib.
-But that doesn't mean you should incorporate it.
+Doml does not require that [Bonzo](https://github.com/ded/bonzo) be in your Ender lib.
+(But that doesn't mean you shouldn't use it.)
 
 
 Build
@@ -84,6 +94,16 @@ Build
 If you want to build from src:
 
     npm run-script boosh
+
+Tests
+-----
+
+Test native: <code>$ node test/tests.js</code>
+
+Test in browser: point your browser to <code>test/test.html</code>
+
+Test in browser with Ender: point your browser to <code>test/ender-test.html</code>
+
 
 TODO
 -----
@@ -93,4 +113,4 @@ Make Doml [AMD](http://wiki.commonjs.org/wiki/Modules/AsynchronousDefinition) co
 Contributors
 -----
 
-   * [Stuart Malin](https://github.com/zhami/doml/commits/master?author=zhami)
+   * [Stuart Malin](https://github.com/zhami/doml/commits/master?author=zhami) [@Zhami](http://twitter.com/#!/zhami)

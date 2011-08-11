@@ -79,6 +79,26 @@
 			ok(elem.firstElementChild.nextSibling.nodeName === 'SPAN', '2nd child has proper tag');
 			body.removeChild(elem);
 		});
+		
+		test('doml appends subtree', 9, function() {
+			var theDiv;
+			$(body).doml('div', ['p', 'hello', {id: "p-hello"}, ['span', 'there', {css: "color:red;border:2px solid green;"}]]);
+			elem = theDiv = body.lastElementChild;
+			ok(elem.nodeName === 'DIV', 'element has proper tag');
+			ok(elem.children.length === 1, 'element has 1 child');
+			elem = elem.firstChild;
+			ok(elem.nodeName === 'P', 'child has proper tag');
+			ok(elem.getAttribute('id') === 'p-hello', 'child has proper ID');
+			ok(elem.children.length === 1, 'child has 1 child');
+			ok(elem.childNodes.length === 2, 'element has proper number of elements & text');
+			elem = elem.firstChild; // text node
+			elem = elem.nextSibling; // SPAN element
+			ok(elem.nodeName === 'SPAN', 'grandchild has proper tag');
+			ok(elem.childNodes.length === 1, 'granchild has proper number of nodes');
+			ok(elem.lastChild.nodeValue === 'there', 'grandchild has proper text');
+			body.removeChild(theDiv);
+		});
+		
 
 	});
 

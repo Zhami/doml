@@ -17,6 +17,11 @@
   */
 !function (context) {
 
+  // a global object for node.js module compatiblity
+  // ============================================
+
+  context['global'] = context;
+
   // Implements simple module system
   // losely based on CommonJS Modules spec v1.1.1
   // ============================================
@@ -25,7 +30,7 @@
 
   function require (identifier) {
     var module = modules[identifier] || window[identifier];
-    if (!module) throw new Error("Requested module has not been defined.");
+    if (!module) throw new Error("Requested module '" + identifier + "' has not been defined.");
     return module;
   }
 
@@ -160,12 +165,27 @@
   	};
   
   	Element.prototype = (function () {
-  		var	handleAttrs, procArg;
+  		var	handleAttrs, handleCSS, procArg;
   
   		//----------------------------------------
   		// private methods
   		//----------------------------------------
-  
+  		handleCSS = function (elem, styleString) {
+  			var i, n, styles, s;
+  			
+  			styles = styleString.split(';');
+  			n = styles.length;
+  			for (i = 0; i < n; i += 1) {
+  				s = styles[i];
+  				if (s) {
+  					s = /\s*([^:]+):\s*(.+)/.exec(s);
+  					if (s && s.length === 3) {
+  						elem.style[s[1]] = s[2];
+  					}
+  				}
+  			}
+  		};
+  		
   		handleAttrs = function (attrs) {
   			var	element, n, setAttr;
   
@@ -178,6 +198,9 @@
   				case "className":
   				case "class":
   					elem.className = value;
+  					break;
+  				case "css":
+  					handleCSS(elem, value);
   					break;
   				default:
   					elem.setAttribute(name, value);
