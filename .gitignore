@@ -1,6 +1,5 @@
-.DS_Store
+*.DS_Store
+*.tmproj
 node_modules
 npm-debug.log
-tmp
-
-
+tmp/*
