@@ -4,16 +4,39 @@ A DOM constructor. Because sometimes you're just wantn' something simple.
 
 Designed for quick DOM node construction. Compare it to [Builder](https://github.com/syntacticx/builder)
 
-SLOW DOWN -- still under much development -- not an accurate README yet
+Inspired by how I used to use jquery-haml.
+
 =======
 
-It works like this:
+Doml works as native Javascript (i.e., <code>require</code> it into your node app), in the browser (i.e., use it in a <code>&lt;script&gt;</code> tag), and as an Ender library component (i.e., works in the <code>$()</code> chain).
+
+It works like this as native Javascript:
 
 ``` js
-if (bowser.msie && bowser.version <= 6) {
-  alert('Hello Doml');
-}
+doml = new Doml();
+el = doml.create('script', {src:'http://freegeoip.net/json/?callback=cb'});
+document.body.appendChild(el);
 ```
+
+Set attributes:
+``` js
+elem = doml.create('input', 'input', {type:'checkbox', checked: true});
+```
+Embed other DOM nodes:
+``` js
+elem = doml.create('div', 'text1', ['p', 'p-text'], 'text2', ['span', 'span-text']);
+```
+Adaptive generation (pseudo-templating) with runtime computed args:
+``` js
+elem = doml.create('div', function (args) {
+	var elems = [];
+	elems.push(doml.create('p', args.text1));
+	elems.push(doml.create('span', args.text2));
+	return elems;
+}, {text1: 'text1', text2: 'text2'});
+```
+
+See the tests for usage patterns, and how to use natively, in browser, and with Ender.
 
 Install
 -----
@@ -39,9 +62,7 @@ Doml requires [Bonzo](https://github.com/ded/bonzo) be in your Ender lib.
 Use it like this:
 
 ``` js
-if ($.browser.chrome) {
-  alert('Hello Silicon Valley');
-}
+$(body).doml('div', 'hello'); // add a div with text "hello"
 ```
 
 Build
